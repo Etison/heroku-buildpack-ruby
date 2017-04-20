@@ -26,4 +26,8 @@ class LanguagePack::Rails42 < LanguagePack::Rails41
       "RAILS_SERVE_STATIC_FILES"  => env("RAILS_SERVE_STATIC_FILES") || "enabled"
     })
   end
+
+  def run_assets_precompile_rake_task
+    # `rake assets:precompile` is run during the "release" phase
+  end
 end
