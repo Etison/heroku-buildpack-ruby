@@ -956,20 +956,20 @@ params = CGI.parse(uri.query || "")
 
   def create_reviewapp_db
     instrument "ruby.create_reviewapp_db" do
-    is_review_app = env("HEROKU_REVIEW_APP") || false
-    if is_review_app
+      # is_review_app = env("HEROKU_REVIEW_APP") || false
+      #if is_review_app
         topic "Creating Review App DB"
 
-      if !rake.task("db::exists").invoke().output
-        rake.task("db:create").invoke()
-      end
+      # if !rake.task("db::exists").invoke().output
+      #   rake.task("db:create").invoke()
+      # end
 
-      rake.task("db:migrate").invoke()
+      # rake.task("db:migrate").invoke()
 
         puts "Database created and migrated"
-      else
-        topic "Not a Review App -- Skipping"
-      end
+      # else
+      #   topic "Not a Review App -- Skipping"
+      # end
     end
   end
 
