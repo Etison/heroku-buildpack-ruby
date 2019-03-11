@@ -961,18 +961,27 @@ params = CGI.parse(uri.query || "")
       if is_review_app
         topic "Initializing Review App DB"
 
-        if !rake.task("db::exists").invoke().output
-          puts "Creating db..."
-          rake.task("db:create").invoke()
+        exist_check = rake.task("db:exists").invoke()
+
+        if exist_check.success?
+          puts "Exist output: #{exist_check.output}"
+          if !!!exist_check.output
+            puts "Creating db..."
+            #   rake.task("db:create").invoke()
+          end
+        else
+          puts "Failed to check DB existance: #{exist_check.output}"
         end
 
-        rake.task("db:migrate").invoke()
+        # rake.task("db:migrate").invoke()
 
         puts "Database created and migrated"
       else
         topic "Not a Review App -- Skipping"
       end
     end
+  rescue Exception => e
+    puts "DB creation failed: #{e}"
   end
 
   def run_assets_precompile_rake_task
