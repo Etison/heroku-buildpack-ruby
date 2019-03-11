@@ -961,12 +961,12 @@ params = CGI.parse(uri.query || "")
       if is_review_app
         topic "Initializing Review App DB"
 
-        # if !rake.task("db::exists").invoke().output
-        #   puts "Creating db..."
-        #   rake.task("db:create").invoke()
-        # end
+        if !rake.task("db::exists").invoke().output
+          puts "Creating db..."
+          rake.task("db:create").invoke()
+        end
 
-        # rake.task("db:migrate").invoke()
+        rake.task("db:migrate").invoke()
 
         puts "Database created and migrated"
       else
