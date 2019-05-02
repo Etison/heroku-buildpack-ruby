@@ -18,18 +18,18 @@ class LanguagePack::Rails2
     super.merge(default_env_vars)
   end
 
-  def prepare_tests
-    # need to clear db:create before db:schema:load_if_ruby gets called by super
-    topic "Clearing #{db_test_tasks_to_clear.join(" ")} rake tasks"
-    clear_db_test_tasks
-    super
-  end
+  # def prepare_tests
+  #   # need to clear db:create before db:schema:load_if_ruby gets called by super
+  #   topic "Clearing #{db_test_tasks_to_clear.join(" ")} rake tasks"
+  #   clear_db_test_tasks
+  #   super
+  # end
 
   def db_test_tasks_to_clear
     # db:test:purge is called by everything in the db:test namespace
     # db:create is called by :db:schema:load_if_ruby
     # db:structure:dump is not needed for tests, but breaks Rails 3.2 db:structure:load on Heroku
-    ["db:test:purge", "db:create", "db:structure:dump"]
+    ["db:test:purge", "db:structure:dump"]
   end
 
   # rails test runner + rspec depend on db:test:purge which drops/creates a db which doesn't work on Heroku's DB plans
@@ -54,7 +54,8 @@ FILE
   private
   def db_prepare_test_rake_tasks
     schema_load    = rake.task("db:schema:load_if_ruby")
-    structure_load = rake.task("db:structure:load_if_sql")
+    # structure_load = rake.task("db:structure:load_if_sql")
+    db_create      = rake.task("db:create")
     db_migrate     = rake.task("db:migrate")
 
     return [] if db_migrate.not_defined?
@@ -71,7 +72,7 @@ FILE
       end
     end
 
-    [schema_load, structure_load, db_migrate]
+    [db_create, schema_load]
   end
 
 
